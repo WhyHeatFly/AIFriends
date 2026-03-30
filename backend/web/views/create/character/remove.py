@@ -1,0 +1,19 @@
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from rest_framework.permissions import IsAuthenticated
+
+from web.models.character import Character
+
+
+class RemoveCharacterView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        try:
+            character_id = request.data['character_id']
+            # 只有自己的角色才能删除
+            Character.objects.filter(id=character_id, author__user=request.user).delete()
+        except:
+            return Response({
+                'result': '删除角色失败，请稍后再试'
+            })
