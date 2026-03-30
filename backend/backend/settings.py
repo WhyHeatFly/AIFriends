@@ -144,7 +144,7 @@ SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(hours=2),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
 
-    'ROTATE_REFRESH_TOKENS': True,
+    'ROTATE_REFRESH_TOKENS': True, # 设置为True，每次用refresh刷新access的时候，会同时刷新refresh
     'BLACKLIST_AFTER_ROTATION': True,
 
     'AUTH_HEADER_TYPES': ('Bearer',),

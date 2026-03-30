@@ -1,13 +1,16 @@
 from django.urls import path
-from rest_framework_simplejwt.views import (
-    TokenObtainPairView,
-    TokenRefreshView,
-)
-
 from web.views.index import index
+from web.views.user.account.login import LoginView
+from web.views.user.account.logout import LogoutView
+from web.views.user.account.refresh_token import RefreshTokenView
+from web.views.user.account.register import RegisterView
 
+# 前面补api主要是为了区别前后端路由
+# LoginView, LogoutView等等属于类 不能直接调用，因此用as_view()
 urlpatterns = [
-    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
-    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('api/user/account/login/', LoginView.as_view()),
+    path('api/user/account/logout/', LogoutView.as_view()),
+    path('api/user/account/register/', RegisterView.as_view()),
+    path('api/user/account/refresh_token/', RefreshTokenView.as_view()),
     path('', index),
 ]
