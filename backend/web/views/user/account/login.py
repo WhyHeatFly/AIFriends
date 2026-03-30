@@ -18,8 +18,9 @@ class LoginView(APIView):
             # Django自带的验证用户名和密码是否匹配，默认情况下，这个认证后端会去查 Django 的用户表
             # 验证成功 返回 user对象，验证失败返回 None
             user = authenticate(username=username, password=password)
+
             if user: # 用户名和密码正确
-                user_profile = UserProfile.objects.get(username=username) # 取出用户信息
+                user_profile = UserProfile.objects.get(user=user) # 取出用户信息
                 refresh = RefreshToken.for_user(user) # 生成jwt
                 # 构造Response返回给前端
                 response = Response({
@@ -41,9 +42,10 @@ class LoginView(APIView):
                 )
                 return response
             # 不正确
-            return Response({
-                'result': '用户名或密码错误'
-            })
+            else:
+                return Response({
+                    'result': '用户名或密码错误'
+                })
         except:
             return Response({
                 'result': '登录异常，请稍后重试'

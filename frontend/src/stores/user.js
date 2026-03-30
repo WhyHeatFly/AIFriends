@@ -6,11 +6,11 @@ import { defineStore } from 'pinia'
 // 定义一个名字叫 'user' 的 store，并导出一个 useUserStore 函数。
 // user 是这个 store 的唯一标识名， 也就是说，Pinia 内部知道这是一个叫 "user" 的仓库。
 export const useUserStore = defineStore('user', ()=> {
-    const id = ref(1)
-    const username = ref('admin')
-    const photo = ref('http://127.0.0.1:8000/media/user/photos/default.png')
-    const profile = ref('111')
-    const accessToken = ref('111')
+    const id = ref(0)
+    const username = ref('')
+    const photo = ref('')
+    const profile = ref('')
+    const accessToken = ref('')
 
     // 辅助函数判断是否处于登录状态
     function isLogin() {
