@@ -12,6 +12,9 @@ export const useUserStore = defineStore('user', ()=> {
     const profile = ref('')
     const accessToken = ref('')
 
+    // 判断是否从云端加载过用户信息
+    const hasPulledUserInfo = ref(false)
+
     // 辅助函数判断是否处于登录状态
     function isLogin() {
         return !!accessToken.value
@@ -38,6 +41,11 @@ export const useUserStore = defineStore('user', ()=> {
         profile.value = ''
         accessToken.value = ''
     }
+
+    function setHasPulledUserInfo(newStatus) {
+        hasPulledUserInfo.value = newStatus
+    }
+
     return {
         id,
         username,
@@ -48,5 +56,7 @@ export const useUserStore = defineStore('user', ()=> {
         setAccessToken,
         setUserInfo,
         logout,
+        hasPulledUserInfo,
+        setHasPulledUserInfo,
     }
 })
