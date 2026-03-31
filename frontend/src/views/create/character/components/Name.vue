@@ -7,7 +7,7 @@ const myName = ref('')
 
 watch(() => props.name, newVal => {
   myName.value = newVal
-})
+}, { immediate: true })
 
 defineExpose({
   myName,

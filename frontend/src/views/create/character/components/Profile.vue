@@ -7,7 +7,7 @@ const myProfile = ref('')
 
 watch(() => props.profile, newVal => {
   myProfile.value = newVal
-})
+}, { immediate: true })
 
 defineExpose({
   myProfile,

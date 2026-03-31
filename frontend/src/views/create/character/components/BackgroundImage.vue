@@ -5,12 +5,12 @@ import CarmeraIcon from "@/views/user/profile/components/icon/CarmeraIcon.vue";
 import Croppie from 'croppie'
 import 'croppie/croppie.css'
 
-const props = defineProps(['backgroundimage'])
+const props = defineProps(['backgroundImage'])
 const myBackgroundImage = ref('')
 
-watch(() => props.backgroundimage, newVal => {
+watch(() => props.backgroundImage, newVal => {
   myBackgroundImage.value = newVal
-})
+}, { immediate: true })
 
 const fileInputRef = useTemplateRef('file-input-ref')
 const modalRef = useTemplateRef('modal-ref')
@@ -75,13 +75,13 @@ defineExpose({
       <div v-if="myBackgroundImage" class="w-15 h-25 rounded-box">
         <img :src="myBackgroundImage" alt="">
       </div>
-      <div v-else class="w-15 h-25 rounded-box bg-base-300"></div>
+      <div v-else class="w-15 h-25 rounded-box bg-base-200"></div>
 
       <div @click="fileInputRef.click()" class="w-15 h-25 rounded-box absolute left-0 top-0 bg-black/20 flex justify-center items-center cursor-pointer">
         <CarmeraIcon/>
       </div>
     </div>
-    <input ref="file-input-ref" type="file" class="hidden" accept="imgae/*" @change="onFileChange">
+    <input ref="file-input-ref" type="file" class="hidden" accept="image/*" @change="onFileChange">
 
     <dialog ref="modal-ref" class="modal">
       <div class="modal-box transition-none max-w-2xl">

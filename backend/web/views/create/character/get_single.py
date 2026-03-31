@@ -12,7 +12,7 @@ class GetSingleView(APIView):
         try:
             # get方法传入的参数在request.query_params中；post方法传入的参数在request.data中
             character_id = request.query_params.get('character_id')
-            character = Character.objects.get(id=character_id, auther__user=request.user)
+            character = Character.objects.get(id=character_id, author__user=request.user)
             return Response({
                 'result': 'success',
                 'character': {
@@ -24,6 +24,9 @@ class GetSingleView(APIView):
                 }
             })
         except:
+            import traceback
+            traceback.print_exc()
+            print("!!!!!!!!!!")
             return Response({
-                'result': '删除角色失败，请稍后再试'
+                'result': '更新角色失败，请稍后再试'
             })

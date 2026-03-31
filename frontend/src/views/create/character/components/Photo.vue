@@ -10,7 +10,7 @@ const myPhoto = ref('')
 
 watch (() => props.photo, newVal => {
   myPhoto.value = newVal
-})
+}, { immediate: true })
 
 const fileInputRef = useTemplateRef('file-input-ref')
 const modalRef = useTemplateRef('modal-ref')
