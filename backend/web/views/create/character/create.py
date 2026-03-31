@@ -1,13 +1,13 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.permissions import IsAdminUser
+from rest_framework.permissions import IsAuthenticated
 
 from web.models.character import Character
 from web.models.user import UserProfile
 
 
 class CreateCharacterView(APIView):
-    permission_classes = [IsAdminUser]
+    permission_classes = [IsAuthenticated]
 
     def post(self, request):
         try:
@@ -34,6 +34,7 @@ class CreateCharacterView(APIView):
                 return Response({
                     'result': '聊天背景不能为空'
                 })
+
             Character.objects.create(
                 author=user_profile,
                 name=name,
@@ -41,6 +42,7 @@ class CreateCharacterView(APIView):
                 photo=photo,
                 background_image=background_image,
             )
+
             return Response({
                 'result': 'success'
             })

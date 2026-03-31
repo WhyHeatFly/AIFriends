@@ -13,6 +13,9 @@ class RemoveCharacterView(APIView):
             character_id = request.data['character_id']
             # 只有自己的角色才能删除
             Character.objects.filter(id=character_id, author__user=request.user).delete()
+            return Response({
+                'result': 'success',
+            })
         except:
             return Response({
                 'result': '删除角色失败，请稍后再试'

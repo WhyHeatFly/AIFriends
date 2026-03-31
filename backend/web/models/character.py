@@ -8,12 +8,12 @@ from web.models.user import UserProfile
 def photo_upload_to(instance, filename):
     ext = filename.split('.')[-1]
     filename = f'{uuid.uuid4().hex[:10]}.{ext}'
-    return f'character/photos/{instance.auther.user_id}_{filename}'
+    return f'character/photos/{instance.author.user_id}_{filename}'
 
 def background_image__upload_to(instance, filename):
     ext = filename.split('.')[-1]
     filename = f'{uuid.uuid4().hex[:10]}.{ext}'
-    return f'character/background_images/{instance.auther.user_id}_{filename}'
+    return f'character/background_images/{instance.author.user_id}_{filename}'
 
 class Character(models.Model):
     # 角色存储每个角色是哪个用户创建的
