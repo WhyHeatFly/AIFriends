@@ -7,9 +7,29 @@ import CreateIcon from "@/components/navbar/icons/CreateIcon.vue";
 import SearchIcon from "@/components/navbar/icons/SearchIcon.vue";
 import {useUserStore} from "@/stores/user.js";
 import UserMenu from "@/components/navbar/UserMenu.vue";
+import {ref, watch} from "vue";
+import {useRoute, useRouter} from "vue-router";
 
 const user = useUserStore()
 
+const searchQuery = ref('') // 用来存储用户的搜索信息
+const router = useRouter()
+const route = useRoute()
+
+// 监听路由里的变量是否变化
+watch(() => route.query.q, newQ => {
+  searchQuery.value = newQ || ''
+})
+
+function handleSearch() {
+  // 把搜索的内容加到url上
+  router.push({
+    name: 'homepage-index',
+    query: {
+      q: searchQuery.value.trim(),
+    }
+  })
+}
 </script>
 
 <template>
@@ -25,15 +45,15 @@ const user = useUserStore()
           </label>
           <div class="px-2 font-bold text-xl">AIFriends</div>
         </div>
-        <div class="navbar-center w-4/5 max-w-180 flex justify-center">
+        <form @submit.prevent="handleSearch" class="navbar-center w-4/5 max-w-180 flex justify-center">
           <div class="join w-4/5 flex justify-center">
-            <input class="input join-item rounded-l-full w-4/5" placeholder="搜索您感兴趣的内容" />
+            <input v-model="searchQuery" class="input join-item rounded-l-full w-4/5" placeholder="搜索您感兴趣的内容" />
             <button class="btn join-item rounded-r-full gap-0">
               <SearchIcon/>
               搜索
             </button>
           </div>
-        </div>
+        </form>
         <div class="navbar-end">
           <RouterLink v-if="user.isLogin()" :to="{name: 'create-index'}" active-class="btn-active" class='btn btn-ghost text-base mr-6'>
             <CreateIcon/>
