@@ -1,14 +1,95 @@
 <script setup>
+import UserInfoField from "@/views/user/space/components/UserInfoField.vue";
+import {nextTick, onBeforeUnmount, onMounted, ref, useTemplateRef} from "vue";
+import api from "@/js/http/api.js";
+import {useRoute} from "vue-router";
 
-import {useRoute, useRouter} from "vue-router";
+const userProfile = ref(null) // 用户的个人信息
+const characters = ref([])  // 角色列表
+const isLoading = ref(false)  // 判断是否正在加载，如果正在加载，则不要再发请求
+const hasCharacters = ref(true)  // 云端是否还有角色
+const sentinelRef = useTemplateRef('sentinel-ref')  // 哨兵的引用
 
-const route = useRoute()   // route 拿到当前路由的相关信息，返回的是当前路由对象
-const router = useRouter() // router 拿到 "导航工具", 返回的是路由器实例，主要用来做“页面跳转”
+const route = useRoute()
 
+function checkSentinelVisible() { // 判断哨兵是否能被看到
+  if (!sentinelRef.value) return false
+
+  const rect = sentinelRef.value.getBoundingClientRect()
+  return rect.top < window.innerHeight && rect.bottom > 0
+}
+
+async function loadMore() {
+  // 正在加载或者云端不再有角色了直接返回
+  if (isLoading.value || !hasCharacters.value) return
+  isLoading.value = true
+
+  let newCharacters = []
+
+  try {
+    const res = await api.get('api/create/character/get_list/', {
+      params: {
+        items_count: characters.value.length,
+        user_id: route.params.user_id,
+      }
+    })
+
+    const data = res.data
+    if (data.result === 'success') {
+      userProfile.value = data.user_profile
+      newCharacters = data.characters
+    }
+  } catch (err) {
+    console.log(err)
+  } finally {
+    isLoading.value = false
+    if (newCharacters.length === 0) {
+      hasCharacters.value = false
+    } else {
+      characters.value.push(...newCharacters)
+      await nextTick()  // 等待元素渲染完
+
+
+      if (checkSentinelVisible()) {
+        await loadMore()
+      }
+    }
+  }
+}
+
+let observer = null
+onMounted(async () => {
+  await loadMore()
+
+  // 监听某个元素是否进入了可视区域的API
+  observer = new IntersectionObserver(
+      entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            loadMore()
+          }
+        })
+      },
+      {root: null, rootMargin: '2px', threshold: 0}
+  )
+  observer.observe(sentinelRef.value)
+})
+
+onBeforeUnmount(() => {
+  observer?.disconnect()
+})
 </script>
 
 <template>
-个人空间: {{ route.params.user_id }}    <!- 取出user_id参数 >
+  <div class="flex flex-col items-center mb-12">
+    <UserInfoField :userProfile="userProfile"/>
+      <div class="grid grid-cols-[repeat(auto-fill,minmax(240px,1fr))] gap-9 mt-12 justify-items-center w-full px-9">
+
+      </div>
+      <div ref="sentinel-ref" class="h-2 mt-8 w-100 bg-red-500"></div>
+      <div v-if="isLoading" class="text-gray-500 mt-4">加载中...</div>
+      <div v-else-if="!hasCharacters" class="text-gray-500 mt-4">没有更多角色了</div>
+  </div>
 </template>
 
 <style scoped>
